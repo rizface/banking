@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     networks:
-      - shopifyx-net
+      - banking-net
 
   prometheus:
     container_name: prometheus
@@ -23,7 +23,7 @@ services:
     environment:
       - PROMETHEUS_ADDRESS=${PROMETHEUS_ADDRESS}
     networks:
-      - shopifyx-net
+      - banking-net
 
   grafana:
     container_name: grafana
@@ -33,13 +33,13 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
     networks:
-      - shopifyx-net
+      - banking-net
 
-  shopifyx_server:
+  banking_server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: shopifyx_server
+    container_name: banking_server
     ports:
       - "8000:8000"
     environment:
@@ -55,10 +55,10 @@ services:
       - BCRYPT_SALT=${BCRYPT_SALT}
       # Add other environment variables as needed
     networks:
-      - shopifyx-net
+      - banking-net
 
 volumes:
   grafana-storage:
 
 networks:
-  shopifyx-net:
+  banking-net:
