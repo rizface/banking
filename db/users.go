@@ -1,10 +1,10 @@
 package db
 
 import (
+	"banking/configs"
+	"banking/db/entity"
 	"context"
 	"errors"
-	"shopifyx/configs"
-	"shopifyx/db/entity"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"

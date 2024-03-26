@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"shopifyx/configs"
+	"banking/configs"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"

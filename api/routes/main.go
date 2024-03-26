@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"shopifyx/api/handlers"
-	"shopifyx/db"
+	"banking/api/handlers"
+	"banking/db"
 
 	"github.com/gofiber/fiber/v2"
 )

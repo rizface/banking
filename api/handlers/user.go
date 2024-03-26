@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"banking/api/responses"
+	"banking/db"
+	"banking/db/entity"
+	"banking/internal/utils"
 	"errors"
 	"net/http"
-	"shopifyx/api/responses"
-	"shopifyx/db"
-	"shopifyx/db/entity"
-	"shopifyx/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
