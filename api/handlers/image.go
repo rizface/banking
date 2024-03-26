@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"banking/db"
 	"fmt"
 	"net/http"
 	"path/filepath"
-	"shopifyx/db"
 
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gofiber/fiber/v2"

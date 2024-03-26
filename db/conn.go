@@ -1,10 +1,10 @@
 package db
 
 import (
+	"banking/configs"
 	"context"
 	"fmt"
 	"os"
-	"shopifyx/configs"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"

@@ -1,6 +1,6 @@
 package main
 
-import webservices "shopifyx/cmd/web-services"
+import webservices "banking/cmd/web-services"
 
 func main() {
 	webservices.Run()

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"shopifyx/configs"
+	"banking/configs"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
