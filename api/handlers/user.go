@@ -4,15 +4,15 @@ import (
 	"errors"
 	"net/http"
 	"shopifyx/api/responses"
+	"shopifyx/db"
 	"shopifyx/db/entity"
-	"shopifyx/db/functions"
 	"shopifyx/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type User struct {
-	Database *functions.User
+	Database *db.User
 }
 
 func validateUser(req struct {
@@ -68,6 +68,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 		Name     string `json:"name"`
 		Password string `json:"password"`
 	}
+
 	if err := ctx.BodyParser(&req); err != nil {
 		return ctx.SendStatus(http.StatusBadRequest)
 	}

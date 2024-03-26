@@ -8,7 +8,7 @@ import (
 	"shopifyx/api/responses"
 	"shopifyx/api/routes"
 	"shopifyx/configs"
-	"shopifyx/db/connections"
+	"shopifyx/db"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,14 +17,20 @@ import (
 )
 
 func Run() {
-	app := fiber.New()
+	app := fiber.New(
+		fiber.Config{
+			StrictRouting:     true,
+			EnablePrintRoutes: true,
+			CaseSensitive:     true,
+		},
+	)
 
 	config, err := configs.LoadConfig()
 	if err != nil {
 		log.Fatal("Cannot load config:", err)
 	}
 
-	dbPool, err := connections.NewPgConn(config)
+	dbPool, err := db.NewPgConn(config)
 	if err != nil {
 		log.Fatalf("failed open connection to db: %v", err)
 	}
