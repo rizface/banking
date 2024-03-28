@@ -3,41 +3,41 @@ package responses
 import "github.com/gofiber/fiber/v2"
 
 type TheResponse struct {
-	StatusCode  int         `json:"code"`
-	StatusError bool        `json:"error"`
-	Message     string      `json:"message"`
-	Data        interface{} `json:"data"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type TheResponseUpload struct {
-	StatusCode  int    `json:"code"`
-	StatusError bool   `json:"error"`
-	Message     string `json:"message"`
-	Filename    string `json:"filename"`
+	Message  string `json:"message"`
+	Filename string `json:"filename"`
 }
 
-type TheResponseCount struct {
-	StatusCode  int         `json:"code"`
-	StatusError bool        `json:"error"`
-	Message     string      `json:"message"`
-	Data        interface{} `json:"data"`
-	Count       int         `json:"count"`
+type Meta struct {
+	Limit  int `json:"limit"`
+	Offset int `json:"offset"`
+	Total  int `json:"total"`
+}
+
+type TheResponseWithMeta struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+	Meta    Meta        `json:"meta"`
 }
 
 func ReturnTheResponse(c *fiber.Ctx, se bool, sc int, m string, dt interface{}) error {
-	tr := TheResponse{sc, se, m, dt}
+	tr := TheResponse{m, dt}
 
 	return c.Status(sc).JSON(tr)
 }
 
-func ReturnTheResponseCount(c *fiber.Ctx, se bool, sc int, m string, dt interface{}, ct int) error {
-	tr := TheResponseCount{sc, se, m, dt, ct}
+func ReturnTheResponseMeta(c *fiber.Ctx, se bool, sc int, m string, dt interface{}, meta Meta) error {
+	tr := TheResponseWithMeta{m, dt, meta}
 
 	return c.Status(sc).JSON(tr)
 }
 
 func ReturnTheResponseUpload(c *fiber.Ctx, se bool, sc int, m string, f string) error {
-	tr := TheResponseUpload{sc, se, m, f}
+	tr := TheResponseUpload{m, f}
 
 	return c.Status(sc).JSON(tr)
 }
