@@ -8,7 +8,7 @@ In development stage you can run this project using `comstrek/air`, install `com
 
 # ENV VAR
 
-## SHOPIFYx
+## BANKING
 Copy variables below to your `.bashrc` or `.zshrc`
 
 ```
@@ -26,7 +26,7 @@ export S3_SECRET_KEY=comingsoon
 export S3_BASE_URL=commingsoon
 ```
 
-## SHOPIFYx LOCAL MIGRATIONS
+## BANKING LOCAL MIGRATIONS
 ### GOLANG-MIGRATE
 Please install https://github.com/golang-migrate/migrate
 ### UP

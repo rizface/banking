@@ -1,1 +1,1 @@
-export SHOPIFYX="postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" && migrate -database ${SHOPIFYX} -path ./db/migrations up
+export BANKING="postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable" && migrate -database ${BANKING} -path ./db/migrations up
