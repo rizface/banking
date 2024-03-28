@@ -38,33 +38,33 @@ func (u *User) Register(ctx context.Context, usr entity.User) (entity.User, erro
 
 	var existingId string
 
-	err = conn.QueryRow(ctx, `SELECT id FROM users WHERE username = $1`, usr.Username).Scan(&existingId)
+	err = conn.QueryRow(ctx, `SELECT id FROM users WHERE email = $1`, usr.Email).Scan(&existingId)
 	if existingId != "" {
-		return entity.User{}, errors.New("EXISTING_USERNAME")
+		return entity.User{}, errors.New("EXISTING_EMAIL")
 	}
 
 	sql := `
-		INSERT INTO users (name, username, password) VALUES ($1, $2, $3)
+		INSERT INTO users (name, email, password) VALUES ($1, $2, $3)
 	`
 
-	_, err = conn.Exec(ctx, sql, usr.Name, usr.Username, string(hashedPassword))
+	_, err = conn.Exec(ctx, sql, usr.Name, usr.Email, string(hashedPassword))
 
 	var result entity.User
 
-	err = conn.QueryRow(ctx, `SELECT id, name, username FROM users WHERE username = $1`, usr.Username).Scan(&result.Id, &result.Name, &result.Username)
+	err = conn.QueryRow(ctx, `SELECT id, name, email FROM users WHERE email = $1`, usr.Email).Scan(&result.Id, &result.Name, &result.Email)
 
 	if err != nil {
 		return entity.User{}, err
 	}
 
 	return entity.User{
-		Id:       result.Id,
-		Name:     result.Name,
-		Username: result.Username,
+		Id:    result.Id,
+		Name:  result.Name,
+		Email: result.Email,
 	}, nil
 }
 
-func (u *User) Login(ctx context.Context, username, password string) (entity.User, error) {
+func (u *User) Login(ctx context.Context, email, password string) (entity.User, error) {
 	conn, err := u.dbPool.Acquire(ctx)
 	if err != nil {
 		return entity.User{}, err
@@ -73,8 +73,8 @@ func (u *User) Login(ctx context.Context, username, password string) (entity.Use
 
 	var result entity.User
 
-	err = conn.QueryRow(ctx, `SELECT id, name, username, password FROM users WHERE username = $1`, username).Scan(
-		&result.Id, &result.Name, &result.Username, &result.Password,
+	err = conn.QueryRow(ctx, `SELECT id, name, email, password FROM users WHERE email = $1`, email).Scan(
+		&result.Id, &result.Name, &result.Email, &result.Password,
 	)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return result, errors.New("USER_NOT_FOUND")
@@ -100,7 +100,7 @@ func (u *User) GetUserById(ctx context.Context, userID string) (entity.User, err
 
 	var result entity.User
 
-	err = conn.QueryRow(ctx, `SELECT id, name, username FROM users WHERE id = $1`, userID).Scan(&result.Id, &result.Name, &result.Username)
+	err = conn.QueryRow(ctx, `SELECT id, name, email FROM users WHERE id = $1`, userID).Scan(&result.Id, &result.Name, &result.Email)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return result, ErrNoRow
 	}
