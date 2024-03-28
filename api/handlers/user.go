@@ -7,6 +7,7 @@ import (
 	"banking/internal/utils"
 	"errors"
 	"net/http"
+	"net/mail"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,6 +27,12 @@ func validateUser(req struct {
 
 	if lenUsername == 0 || lenPassword == 0 || lenName == 0 {
 		return errors.New("username and password are required")
+	}
+
+	// validate email
+	_, err := mail.ParseAddress(req.Username)
+	if err != nil {
+		return errors.New("invalid email format")
 	}
 
 	if lenUsername < 5 || lenPassword < 5 || lenName < 5 {
