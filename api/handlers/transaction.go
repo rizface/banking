@@ -56,7 +56,7 @@ func (t *Transaction) Transfer(c *fiber.Ctx) error {
 	}
 
 	if errors.Is(err, db.ErrBalanceNotFound) {
-		return c.Status(http.StatusUnprocessableEntity).
+		return c.Status(http.StatusBadRequest).
 			SendString(err.Error())
 	}
 
