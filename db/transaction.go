@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -35,16 +34,13 @@ func (t *Transaction) Transfer(ctx context.Context, trx entity.Transaction) erro
 		return fmt.Errorf("failed start transaction: %v", err)
 	}
 
-	var (
-		Balance struct {
-			Id      int
-			Balance int
-		}
-		lowerCurrency = strings.ToLower(trx.FromCurrency)
-	)
+	var Balance struct {
+		Id      int
+		Balance int
+	}
 
 	err = tx.
-		QueryRow(ctx, `select id, balance from balances where user_id = $1 and lower(currency) = $2 for update`, trx.SenderId, lowerCurrency).
+		QueryRow(ctx, `select id, balance from balances where user_id = $1 and currency = $2 for update`, trx.SenderId, trx.FromCurrency).
 		Scan(
 			&Balance.Id, &Balance.Balance,
 		)
@@ -85,7 +81,7 @@ func (t *Transaction) Transfer(ctx context.Context, trx entity.Transaction) erro
 		)
 	`
 
-	_, err = tx.Exec(ctx, sql, trx.SenderId, -trx.Balances, lowerCurrency, "", string(jsonSource))
+	_, err = tx.Exec(ctx, sql, trx.SenderId, -trx.Balances, trx.FromCurrency, "", string(jsonSource))
 	if err != nil {
 		tx.Rollback(ctx)
 		return fmt.Errorf("failed insert transaction history: %v", err)

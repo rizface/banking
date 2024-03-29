@@ -10,8 +10,8 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-    networks:
-      - banking-net
+    # networks:
+    #   - banking-net
 
   prometheus:
     container_name: prometheus
@@ -22,8 +22,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     environment:
       - PROMETHEUS_ADDRESS=${PROMETHEUS_ADDRESS}
-    networks:
-      - banking-net
+    # networks:
+    #   - banking-net
 
   grafana:
     container_name: grafana
@@ -32,30 +32,30 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
-    networks:
-      - banking-net
+    # networks:
+    #   - banking-net
 
-  banking_server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: banking_server
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=5432
-      - DB_HOST=postgres
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - PROMETHEUS_ADDRESS=${PROMETHEUS_ADDRESS}
-      - S3_ID=${S3_ID}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
-      - S3_BASE_URL=${S3_BASE_URL}
-      - BCRYPT_SALT=${BCRYPT_SALT}
+  # banking_server:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: banking_server
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - DB_NAME=${DB_NAME}
+  #     - DB_PORT=5432
+  #     - DB_HOST=postgres
+  #     - DB_USERNAME=${DB_USERNAME}
+  #     - DB_PASSWORD=${DB_PASSWORD}
+  #     - PROMETHEUS_ADDRESS=${PROMETHEUS_ADDRESS}
+  #     - S3_ID=${S3_ID}
+  #     - S3_SECRET_KEY=${S3_SECRET_KEY}
+  #     - S3_BASE_URL=${S3_BASE_URL}
+  #     - BCRYPT_SALT=${BCRYPT_SALT}
       # Add other environment variables as needed
-    networks:
-      - banking-net
+    # networks:
+    #   - banking-net
 
 volumes:
   grafana-storage:

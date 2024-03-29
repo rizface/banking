@@ -6,6 +6,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/go-ozzo/ozzo-validation/is"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -30,9 +32,9 @@ func (t *Transaction) Transfer(c *fiber.Ctx) error {
 			SendString("balances must be greater than 0")
 	}
 
-	if len(req.FromCurrency) != 3 {
+	if err := validation.Validate(req.FromCurrency, validation.Required, is.CurrencyCode); err != nil {
 		return c.Status(http.StatusBadRequest).
-			SendString("currency is invalid")
+			SendString(err.Error())
 	}
 
 	if req.RecipientBankName == "" || req.RecipientBankAccountNumber == "" {
