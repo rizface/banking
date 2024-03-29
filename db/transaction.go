@@ -3,7 +3,6 @@ package db
 import (
 	"banking/db/entity"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -69,19 +68,13 @@ func (t *Transaction) Transfer(ctx context.Context, trx entity.Transaction) erro
 		BankName:          trx.RecipientBankName,
 	}
 
-	jsonSource, err := json.Marshal(source)
-	if err != nil {
-		tx.Rollback(ctx)
-		return fmt.Errorf("failed marshal source: %v", err)
-	}
-
 	sql := `
 		insert into histories (user_id, balance, currency, transfer_proof_image, source) values (
 			$1, $2, $3, $4, $5
 		)
 	`
 
-	_, err = tx.Exec(ctx, sql, trx.SenderId, -trx.Balances, trx.FromCurrency, "", string(jsonSource))
+	_, err = tx.Exec(ctx, sql, trx.SenderId, -trx.Balances, trx.FromCurrency, "", source)
 	if err != nil {
 		tx.Rollback(ctx)
 		return fmt.Errorf("failed insert transaction history: %v", err)
