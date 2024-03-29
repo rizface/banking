@@ -21,7 +21,6 @@ func RouteRegister(app *fiber.App, deps handlers.Dependencies) {
 	imageUploaderHandler := handlers.ImageUploader{
 		Uploader: db.NewImageUploader(deps.Cfg),
 	}
-
 	ImageRoutes(app, imageUploaderHandler)
 
 	balanceHandler := handlers.BalanceHandler{
@@ -30,4 +29,10 @@ func RouteRegister(app *fiber.App, deps handlers.Dependencies) {
 	}
 
 	BalanceRoutes(app, balanceHandler)
+
+	transactionHandler := handlers.Transaction{
+		DB: db.NewTransaction(deps.DbPool),
+	}
+
+	TransactionRoutes(app, transactionHandler)
 }

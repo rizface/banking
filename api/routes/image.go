@@ -8,5 +8,6 @@ import (
 )
 
 func ImageRoutes(app *fiber.App, h handlers.ImageUploader) {
-	app.Post("/v1/image", h.Upload).Use(middleware.JWTAuth())
+	g := app.Group("/v1/image").Use(middleware.JWTAuth())
+	g.Post("", h.Upload)
 }
