@@ -35,12 +35,22 @@ func validateUser(req struct {
 		return errors.New("invalid email format")
 	}
 
-	if lenEmail < 5 || lenPassword < 5 || lenName < 5 {
-		return errors.New("username and password length must be at least 5 characters")
+	// validate name
+
+	if lenName < 5 {
+		return errors.New("name length must be at least 5 characters")
+	}
+	if lenName > 50 {
+		return errors.New("name length cannot exceed 50 characters")
 	}
 
-	if lenEmail > 15 || lenPassword > 15 || lenName > 15 {
-		return errors.New("username and password length cannot exceed 15 characters")
+	// validate password
+
+	if lenPassword < 5 {
+		return errors.New("password length must be at least 5 characters")
+	}
+	if lenPassword > 15 {
+		return errors.New("password length cannot exceed 15 characters")
 	}
 
 	return nil
@@ -57,12 +67,19 @@ func validateLogin(req struct {
 		return errors.New("email and password are required")
 	}
 
-	if lenEmail < 5 || lenPassword < 5 {
-		return errors.New("username and password length must be at least 5 characters")
+	// validate email
+	_, err := mail.ParseAddress(req.Email)
+	if err != nil {
+		return errors.New("invalid email format")
 	}
 
-	if lenEmail > 15 || lenPassword > 15 {
-		return errors.New("username and password length cannot exceed 15 characters")
+	// validate password
+
+	if lenPassword < 5 {
+		return errors.New("password length must be at least 5 characters")
+	}
+	if lenPassword > 15 {
+		return errors.New("password length cannot exceed 15 characters")
 	}
 
 	return nil
