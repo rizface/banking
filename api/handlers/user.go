@@ -173,7 +173,7 @@ func (u *User) Login(ctx *fiber.Ctx) error {
 		"message": "User logged successfully",
 		"data": fiber.Map{
 			"name":        result.Name,
-			"username":    result.Email,
+			"email":       result.Email,
 			"accessToken": accessToken,
 		},
 	})
