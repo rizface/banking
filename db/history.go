@@ -17,14 +17,14 @@ func NewHistory(dbPool *pgxpool.Pool) *History {
 	}
 }
 
-func (h *History) GetHistory(ctx context.Context, userId string, limit, offset int) ([]entity.History, error) {
+func (h *History) GetHistory(ctx context.Context, userId string, limit, offset int) ([]entity.HistoryResponse, error) {
 	conn, err := h.dbPool.Acquire(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	sql := `
-	SELECT id, user_id, balance, currency, transfer_proof_image, created_at, source 
+	SELECT id, balance, currency, transfer_proof_image, created_at, source 
 	FROM histories 
 	WHERE user_id = $1 
 	ORDER BY created_at DESC 
@@ -37,10 +37,10 @@ func (h *History) GetHistory(ctx context.Context, userId string, limit, offset i
 	}
 	defer rows.Close()
 
-	var histories []entity.History
+	var histories []entity.HistoryResponse
 	for rows.Next() {
-		var history entity.History
-		err = rows.Scan(&history.TransactionId, &history.UserId, &history.Balance, &history.Currency, &history.TransferProofImg, &history.CreatedAt, &history.Source)
+		var history entity.HistoryResponse
+		err = rows.Scan(&history.TransactionId, &history.Balance, &history.Currency, &history.TransferProofImg, &history.CreatedAt, &history.Source)
 		if err != nil {
 			return nil, err
 		}

@@ -3,7 +3,6 @@ package db
 import (
 	"banking/db/entity"
 	"context"
-	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -38,7 +37,6 @@ func (b *Balance) AddBalance(ctx context.Context, balance entity.Balance, histor
 	DO UPDATE SET balance = (SELECT balance FROM balances WHERE user_id = $1 and currency = $3) + $2
 	`
 	_, err = tx.Exec(ctx, sql, balance.UserId, balance.Balance, balance.Currency)
-	fmt.Println("sql", sql, err)
 	if err != nil {
 		return err
 	}

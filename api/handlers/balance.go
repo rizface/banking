@@ -4,6 +4,9 @@ import (
 	"banking/api/responses"
 	"banking/db"
 	"banking/db/entity"
+	"errors"
+	"net/url"
+	"strings"
 
 	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -31,11 +34,11 @@ type (
 
 func (abr AddBalanceRequest) Validate() error {
 	return validation.ValidateStruct(&abr,
-		validation.Field(&abr.SenderBankAccountNumber, validation.Required, validation.Length(5, 30)),
+		validation.Field(&abr.SenderBankAccountNumber, validation.Required, validation.Length(5, 50)),
 		validation.Field(&abr.SenderBankName, validation.Required, validation.Length(5, 30)),
 		validation.Field(&abr.AddedBalance, validation.Required, validation.Min(float64(1.0))),
 		validation.Field(&abr.Currency, validation.Required, is.CurrencyCode),
-		validation.Field(&abr.TransferProofImg, validation.Required),
+		validation.Field(&abr.TransferProofImg, validation.Required, is.URL),
 	)
 }
 
@@ -46,6 +49,24 @@ func (qg QueryGetHistory) Validate() error {
 	)
 }
 
+func validateURL(s string) error {
+	u, err := url.Parse(s)
+	if err != nil {
+		return err
+	}
+
+	if u.Scheme == "" || u.Host == "" {
+		return errors.New("invalid url")
+	}
+
+	parts := strings.Split(u.Host, ".")
+	if len(parts) < 2 {
+		return errors.New("invalid url")
+	}
+
+	return nil
+}
+
 func (b *BalanceHandler) AddBalance(ctx *fiber.Ctx) error {
 	var req AddBalanceRequest
 	if err := ctx.BodyParser(&req); err != nil {
@@ -53,6 +74,10 @@ func (b *BalanceHandler) AddBalance(ctx *fiber.Ctx) error {
 	}
 
 	if err := req.Validate(); err != nil {
+		return responses.ErrorBadRequest(ctx, err.Error())
+	}
+
+	if err := validateURL(req.TransferProofImg); err != nil {
 		return responses.ErrorBadRequest(ctx, err.Error())
 	}
 

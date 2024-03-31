@@ -1,1 +1,1 @@
-drop table if exists balance_histories;
+drop table if exists balance_histories cascade;

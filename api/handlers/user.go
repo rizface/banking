@@ -142,7 +142,7 @@ func (u *User) Login(ctx *fiber.Ctx) error {
 		Password string `json:"password"`
 	}
 	if err := ctx.BodyParser(&req); err != nil {
-		return err
+		return responses.ErrorBadRequest(ctx, err.Error())
 	}
 
 	if err := validateLogin(req); err != nil {

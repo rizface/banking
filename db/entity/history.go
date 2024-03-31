@@ -14,4 +14,12 @@ type (
 		CreatedAt        int64   `json:"createdAt"`
 		Source           Source  `json:"source"`
 	}
+	HistoryResponse struct {
+		TransactionId    string  `json:"transactionId"`
+		Balance          float64 `json:"balance"`
+		Currency         string  `json:"currency"`
+		TransferProofImg string  `json:"transferProofImg"`
+		CreatedAt        int64   `json:"createdAt"`
+		Source           Source  `json:"source"`
+	}
 )

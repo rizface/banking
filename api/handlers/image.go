@@ -19,7 +19,7 @@ func (i *ImageUploader) Upload(c *fiber.Ctx) error {
 	fileHeader, err := c.FormFile("file")
 	if err != nil {
 		return c.
-			Status(http.StatusInternalServerError).
+			Status(http.StatusBadRequest).
 			JSON("failed get image")
 	}
 
@@ -59,7 +59,10 @@ func (i *ImageUploader) Upload(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(err.Error())
 	}
 
-	return c.Status(http.StatusOK).JSON(map[string]string{
-		"imageUrl": path,
+	return c.Status(http.StatusOK).JSON(map[string]interface{}{
+		"message": "File uploaded sucessfully",
+		"data": map[string]string{
+			"imageUrl": path,
+		},
 	})
 }
