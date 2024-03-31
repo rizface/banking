@@ -16,7 +16,7 @@ func NewPgConn(config configs.Config) (*pgxpool.Pool, error) {
 	var dsn string
 
 	if os.Getenv("ENV") == "production" {
-		dsn = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=verify-full&sslrootcert=ap-southeast-1-bundle.pem", config.DbUsername, config.DbPassword, config.DbHost, config.DbPort, config.DbName)
+		dsn = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?%s", config.DbUsername, config.DbPassword, config.DbHost, config.DbPort, config.DbName, config.DbParams)
 	} else {
 		dsn = fmt.Sprintf("postgres://%s:%s@%s:%s/%s", config.DbUsername, config.DbPassword, config.DbHost, config.DbPort, config.DbName)
 	}

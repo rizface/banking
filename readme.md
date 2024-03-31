@@ -23,7 +23,9 @@ export JWT_SECRET=secretjwt
 export BCRYPT_SALT=8 # jangan pake 8 di prod! pake > 10
 export S3_ID=comingsoon
 export S3_SECRET_KEY=comingsoon
-export S3_BASE_URL=commingsoon
+export S3_BUCKET_NAME=commingsoon
+export DB_PARAMS="sslmode=disable"
+export ENV=development
 ```
 
 ## BANKING LOCAL MIGRATIONS

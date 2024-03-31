@@ -12,6 +12,7 @@ type Config struct {
 	DbHost     string
 	DbUsername string
 	DbPassword string
+	DbParams   string
 
 	APPPort string
 	ENV     string
@@ -21,9 +22,10 @@ type Config struct {
 	JWTSecret  string
 	BcryptSalt int
 
-	S3ID        string
-	S3SecretKey string
-	S3BaseURL   string
+	S3ID         string
+	S3SecretKey  string
+	S3BucketName string
+	S3Region     string
 }
 
 func LoadConfig() (Config, error) {
@@ -33,6 +35,7 @@ func LoadConfig() (Config, error) {
 		DbPort:     os.Getenv("DB_PORT"),
 		DbUsername: os.Getenv("DB_USERNAME"),
 		DbPassword: os.Getenv("DB_PASSWORD"),
+		DbParams:   os.Getenv("DB_PARAMS"),
 
 		APPPort: os.Getenv("APP_PORT"),
 		ENV:     os.Getenv("ENV"),
@@ -41,9 +44,10 @@ func LoadConfig() (Config, error) {
 
 		JWTSecret: os.Getenv("JWT_SECRET"),
 
-		S3ID:        os.Getenv("S3_ID"),
-		S3SecretKey: os.Getenv("S3_SECRET_KEY"),
-		S3BaseURL:   os.Getenv("S3_BASE_URL"),
+		S3ID:         os.Getenv("S3_ID"),
+		S3SecretKey:  os.Getenv("S3_SECRET_KEY"),
+		S3BucketName: os.Getenv("S3_BUCKET_NAME"),
+		S3Region:     os.Getenv("S3_REGION"),
 	}
 
 	salt, err := strconv.Atoi(os.Getenv("BCRYPT_SALT"))

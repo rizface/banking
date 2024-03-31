@@ -22,7 +22,7 @@ var credentialProvider = func(cfg configs.Config) aws.CredentialsProviderFunc {
 
 func newS3Uploader(cfg configs.Config) *manager.Uploader {
 	client := s3.New(s3.Options{
-		Region:      "ap-southeast-1",
+		Region:      cfg.S3Region,
 		Credentials: credentialProvider(cfg),
 	})
 
@@ -31,17 +31,19 @@ func newS3Uploader(cfg configs.Config) *manager.Uploader {
 
 type ImageUploader struct {
 	uploader *manager.Uploader
+	config   configs.Config
 }
 
 func NewImageUploader(cfg configs.Config) *ImageUploader {
 	return &ImageUploader{
 		uploader: newS3Uploader(cfg),
+		config:   cfg,
 	}
 }
 
 func (i *ImageUploader) Upload(ctx context.Context, file io.Reader, filename string) (string, error) {
 	result, err := i.uploader.Upload(ctx, &s3.PutObjectInput{
-		Bucket: aws.String("sprint-bucket-public-read"),
+		Bucket: aws.String(i.config.S3BucketName),
 		Key:    aws.String(filename),
 		Body:   file,
 		ACL:    types.ObjectCannedACLPublicRead,
