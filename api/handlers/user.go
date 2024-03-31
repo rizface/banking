@@ -7,6 +7,7 @@ import (
 	"banking/internal/utils"
 	"errors"
 	"net/http"
+	"net/mail"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,46 +17,69 @@ type User struct {
 }
 
 func validateUser(req struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Name     string `json:"name"`
 	Password string `json:"password"`
 }) error {
-	lenUsername := len(req.Username)
+	lenEmail := len(req.Email)
 	lenPassword := len(req.Password)
 	lenName := len(req.Name)
 
-	if lenUsername == 0 || lenPassword == 0 || lenName == 0 {
-		return errors.New("username and password are required")
+	if lenEmail == 0 || lenPassword == 0 || lenName == 0 {
+		return errors.New("email and password are required")
 	}
 
-	if lenUsername < 5 || lenPassword < 5 || lenName < 5 {
-		return errors.New("username and password length must be at least 5 characters")
+	// validate email
+	_, err := mail.ParseAddress(req.Email)
+	if err != nil {
+		return errors.New("invalid email format")
 	}
 
-	if lenUsername > 15 || lenPassword > 15 || lenName > 15 {
-		return errors.New("username and password length cannot exceed 15 characters")
+	// validate name
+
+	if lenName < 5 {
+		return errors.New("name length must be at least 5 characters")
+	}
+	if lenName > 50 {
+		return errors.New("name length cannot exceed 50 characters")
+	}
+
+	// validate password
+
+	if lenPassword < 5 {
+		return errors.New("password length must be at least 5 characters")
+	}
+	if lenPassword > 15 {
+		return errors.New("password length cannot exceed 15 characters")
 	}
 
 	return nil
 }
 
 func validateLogin(req struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }) error {
-	lenUsername := len(req.Username)
+	lenEmail := len(req.Email)
 	lenPassword := len(req.Password)
 
-	if lenUsername == 0 || lenPassword == 0 {
-		return errors.New("username and password are required")
+	if lenEmail == 0 || lenPassword == 0 {
+		return errors.New("email and password are required")
 	}
 
-	if lenUsername < 5 || lenPassword < 5 {
-		return errors.New("username and password length must be at least 5 characters")
+	// validate email
+	_, err := mail.ParseAddress(req.Email)
+	if err != nil {
+		return errors.New("invalid email format")
 	}
 
-	if lenUsername > 15 || lenPassword > 15 {
-		return errors.New("username and password length cannot exceed 15 characters")
+	// validate password
+
+	if lenPassword < 5 {
+		return errors.New("password length must be at least 5 characters")
+	}
+	if lenPassword > 15 {
+		return errors.New("password length cannot exceed 15 characters")
 	}
 
 	return nil
@@ -64,7 +88,7 @@ func validateLogin(req struct {
 func (u *User) Register(ctx *fiber.Ctx) error {
 	// Parse request body
 	var req struct {
-		Username string `json:"username"`
+		Email    string `json:"email"`
 		Name     string `json:"name"`
 		Password string `json:"password"`
 	}
@@ -80,7 +104,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 
 	// Create user object
 	usr := entity.User{
-		Username: req.Username,
+		Email:    req.Email,
 		Name:     req.Name,
 		Password: req.Password,
 	}
@@ -88,7 +112,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 	// Register user
 	result, err := u.Database.Register(ctx.UserContext(), usr)
 	if err != nil {
-		if err.Error() == "EXISTING_USERNAME" {
+		if err.Error() == "EXISTING_EMAIL" {
 			return responses.ErrorConflict(ctx, err.Error())
 		}
 
@@ -96,7 +120,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 	}
 
 	// generate access token
-	accessToken, err := utils.GenerateAccessToken(result.Username, result.Id)
+	accessToken, err := utils.GenerateAccessToken(result.Email, result.Id)
 	if err != nil {
 		return responses.ErrorInternalServerError(ctx, err.Error())
 	}
@@ -105,7 +129,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 		"message": "User registered successfully",
 		"data": fiber.Map{
 			"name":        result.Name,
-			"username":    result.Username,
+			"email":       result.Email,
 			"accessToken": accessToken,
 		},
 	})
@@ -114,7 +138,7 @@ func (u *User) Register(ctx *fiber.Ctx) error {
 func (u *User) Login(ctx *fiber.Ctx) error {
 	// Parse request body
 	var req struct {
-		Username string `json:"username"`
+		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 	if err := ctx.BodyParser(&req); err != nil {
@@ -126,7 +150,7 @@ func (u *User) Login(ctx *fiber.Ctx) error {
 	}
 
 	// login user
-	result, err := u.Database.Login(ctx.UserContext(), req.Username, req.Password)
+	result, err := u.Database.Login(ctx.UserContext(), req.Email, req.Password)
 	if err != nil {
 		if err.Error() == "USER_NOT_FOUND" {
 			return responses.ErrorNotFound(ctx, err.Error())
@@ -140,7 +164,7 @@ func (u *User) Login(ctx *fiber.Ctx) error {
 	}
 
 	// generate access token
-	accessToken, err := utils.GenerateAccessToken(result.Username, result.Id)
+	accessToken, err := utils.GenerateAccessToken(result.Email, result.Id)
 	if err != nil {
 		return responses.ErrorInternalServerError(ctx, err.Error())
 	}
@@ -149,7 +173,7 @@ func (u *User) Login(ctx *fiber.Ctx) error {
 		"message": "User logged successfully",
 		"data": fiber.Map{
 			"name":        result.Name,
-			"username":    result.Username,
+			"username":    result.Email,
 			"accessToken": accessToken,
 		},
 	})
