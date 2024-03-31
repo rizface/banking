@@ -1,20 +1,29 @@
-## Build
-FROM golang:1.22.1-alpine AS build
+# Step 1: Build the binary
+FROM golang:1.22 as builder
 
-WORKDIR $GOPATH/src/banking
+# Set the Current Working Directory inside the container
+WORKDIR /app
 
-# manage dependencies
+# Copy everything from the current directory to the PWD(Present Working Directory) inside the container
 COPY . .
-RUN go mod download
 
-RUN go build -a -o /banking-server ./main.go
+RUN go mod tidy
 
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o main ./main.go
 
-## Deploy
-FROM alpine:latest
-RUN apk add tzdata
-COPY --from=build /banking-server /banking-server
+# Step 2: Use a minimal base image to run the application
+FROM alpine:3.19  
 
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /app
+
+# Copy the Pre-built binary file from the previous stage
+COPY --from=builder /app/main .
+
+# Expose port 8080 to the outside world
 EXPOSE 8080
 
-ENTRYPOINT ["/banking-server"]
+# Command to run the executable
+CMD ["./main"]

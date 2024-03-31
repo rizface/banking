@@ -8,10 +8,6 @@ import (
 )
 
 func RouteRegister(app *fiber.App, deps handlers.Dependencies) {
-	app.Get("/ping", func(c *fiber.Ctx) error {
-		return c.SendString("pong")
-	})
-
 	userHandler := handlers.User{
 		Database: db.NewUser(deps.DbPool, deps.Cfg),
 	}
