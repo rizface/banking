@@ -17,7 +17,7 @@ FROM alpine:3.19
 
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /app
+WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main .

@@ -3,6 +3,7 @@ package routes
 import (
 	"banking/api/handlers"
 	"banking/db"
+	"banking/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,7 +16,7 @@ func RouteRegister(app *fiber.App, deps handlers.Dependencies) {
 	UserRoutes(app, userHandler)
 
 	imageUploaderHandler := handlers.ImageUploader{
-		Uploader: db.NewImageUploader(deps.Cfg),
+		Uploader: utils.NewImageUploader(deps.Cfg),
 	}
 	ImageRoutes(app, imageUploaderHandler)
 

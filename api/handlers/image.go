@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"banking/db"
+	"banking/internal/utils"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -12,7 +12,7 @@ import (
 )
 
 type ImageUploader struct {
-	Uploader *db.ImageUploader
+	Uploader *utils.ImageUploader
 }
 
 func (i *ImageUploader) Upload(c *fiber.Ctx) error {

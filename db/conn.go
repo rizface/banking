@@ -14,7 +14,6 @@ func NewPgConn(config configs.Config) (*pgxpool.Pool, error) {
 	ctx := context.Background()
 
 	var dsn string
-	fmt.Println(os.Getenv("ENV"))
 
 	if os.Getenv("ENV") == "production" {
 		dsn = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?%s", config.DbUsername, config.DbPassword, config.DbHost, config.DbPort, config.DbName, config.DbParams)
