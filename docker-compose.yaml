@@ -49,7 +49,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3001"
+      - "3000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

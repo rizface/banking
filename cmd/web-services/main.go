@@ -2,8 +2,8 @@ package webservices
 
 import (
 	"context"
+	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"banking/api/handlers"
@@ -35,7 +35,7 @@ func FiberPrometheusMiddleware(c *fiber.Ctx) error {
 	err := c.Next()
 
 	status := c.Response().StatusCode()
-	httpRequestProm.WithLabelValues(c.Path(), c.Method(), http.StatusText(status)).Observe(float64(time.Since(start).Milliseconds()))
+	httpRequestProm.WithLabelValues(c.Route().Path, c.Method(), fmt.Sprintf("%v", status)).Observe(float64(time.Since(start).Milliseconds()))
 
 	return err
 }
@@ -90,5 +90,5 @@ func Run() {
 	})
 
 	// Here we go!
-	log.Fatalln(app.Listen(":" + config.APPPort))
+	log.Fatalln(app.Listen(":8080"))
 }
